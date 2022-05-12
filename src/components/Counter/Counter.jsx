@@ -1,9 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
+
 
 const pinkRGB = `rgb(236, 72, 153)`
 
+function counterReducer(count, action) {
+  switch (action.type) {
+
+    case 'increment': {
+      return count + 1;
+    }
+
+    case 'decrement': {
+      return count - 1;
+    }
+
+    case 'reset': {
+      return 0;
+    }
+    default: {
+      throw Error(`Unknown action: ${action.type}`)
+    }
+  }
+}
+
 export default function Counter() {
-  const [count, setCount] = useState(0)
+
+  const [count, dispatch] = useReducer(counterReducer, 0);
+
   const [currentColor, setCurrentColor] = useState(pinkRGB)
 
   useEffect(() => {
@@ -20,16 +43,22 @@ export default function Counter() {
     }
   }, [count])
 
-  const increment = () => {
-    setCount((prevState) => prevState + 1)
+  const handleIncrement = () => {
+    dispatch({
+      type: 'increment',
+    })
   }
 
-  const decrement = () => {
-    setCount((prevState) => prevState - 1)
+  const handleDecrement = () => {
+    dispatch({
+      type: 'decrement',
+    })
   }
 
-  const reset = () => {
-    setCount(0)
+  const handleReset = () => {
+    dispatch({
+      type: 'reset',
+    })
   }
 
   return (
@@ -41,7 +70,7 @@ export default function Counter() {
         <button
           className="text-green-400 border-2 border-green-400 p-3"
           type="button"
-          onClick={increment}
+          onClick={handleIncrement}
           aria-label="increment"
         >
           Increment
@@ -49,7 +78,7 @@ export default function Counter() {
         <button
           className="text-red-500 border-2 border-red-500 p-2"
           type="button"
-          onClick={decrement}
+          onClick={handleDecrement}
           aria-label="decrement"
         >
           Decrement
@@ -58,7 +87,7 @@ export default function Counter() {
           className="text-pink-500 border-2 border-pink-500 p-2"
           type="button"
           aria-label="reset"
-          onClick={reset}
+          onClick={handleReset}
         >
           Reset
         </button>
